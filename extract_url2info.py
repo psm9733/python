@@ -25,7 +25,7 @@ class Extract_file():
         self.last_number = urls().get_last_number()
         for number in range(self.init_number, self.last_number + 1):
             file = open(self.path + str(number) + ".txt", "r")
-            print(file)
+            print(file.readlines())
 
 
 class urls():
