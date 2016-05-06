@@ -1,7 +1,8 @@
+#make Sangmin
 import urllib.request
 import re
 import os
-import bs4
+from bs4 import BeautifulSoup
 
 class Extract_url():
 
@@ -19,17 +20,33 @@ class Extract_url():
 
 class Extract_file():
 
-    def readfile(self):
-        self.path = os.getcwd() + "\\project\\htmlfile\\"
-        self.init_number = 140#urls().get_init_number()
-        self.last_number = urls().get_last_number()
+    def read_extract_file(self):
+        self.path = os.getcwd() + "\\project\\"
+        self.init_number = Urls().get_init_number()
+        self.last_number = Urls().get_last_number()
+        try:
+            editfile = open(self.path + "pullrequest_info\\pullrequest_info.txt", "w")
+        except FileNotFoundError:
+            print("*****Error happen*****")
+            print("File data is not exist. -> You should be downloading Pullrequest_html Now!!\n")
+            return
         for number in range(self.init_number, self.last_number + 1):
-            file = open(self.path + str(number) + ".txt", "r")
-            print(file.readlines())
+            try:
+                file = open(self.path + "htmlfile\\" + str(number) + ".txt", "r")
+                f = str(file.readlines())
+                bs = BeautifulSoup(f)
+                name = bs.find_all(rel="contributor")
+                editfile_name = bs.find_all(class_="message")
+                editfile.write(str(number)+"    :    "+name[0].string +"   :   "+ editfile_name[0].string)
+                print("Extracting..."+str(number)+"/"+str(self.last_number+"...waiting"))
+            except FileNotFoundError:
+                print("***** Error happen *****")
+                print("File data is not exist. -> You should be downloading Pullrequest_html Now!!\n")
+                return
+            else:
+                print("Extracting..."+str(number)+"/"+str(self.last_number)+"Complete")
 
-
-class urls():
-    init_number = 140
+class Urls():
     define = False
     req = urllib.request
     url = req.urlopen("http://github.com/jyheo/JavaExercise/pulls")
@@ -38,10 +55,11 @@ class urls():
 
     def __init__(self):
         extract = Extract_url(self.pulls_list_html)
-        #self.init_number = Extract_number(self.pulls_list_html).get_init_number()
-        self.last_number = Extract_url(self.pulls_list_html).get_last_number()
+        self.init_number = extract.get_init_number()
+        self.last_number = extract.get_last_number()
         self.define = True
         self.url_list = ''
+
 
     def find_pull_url(self):
         for number in range(self.init_number, self.last_number+1):
@@ -49,11 +67,6 @@ class urls():
                 self.url_list += self.pull_first_url + str(number)
             else:
                 self.url_list += self.pull_first_url + str(number) + ','
-            '''try:
-                self.pulls_url += req.urlopen(self.pull_url + str(number))
-                print("a")
-            except urllib.error.HTTPError:
-                continue'''
         url_list_array = re.split(',',self.url_list)
         return url_list_array
 
@@ -63,10 +76,11 @@ class urls():
         for url in self.find_pull_url():
             try:
                 html = self.req.urlopen(url).read()
-                print("downloading........"+url)
+                print(str(re.findall("\d+",url)[0])+"/"+str(self.last_number)+".....downloading....."+url)
                 f.make_htmlfile(re.findall("\d+", url)[0]).write(str(html))
             except urllib.error.HTTPError:
-                print("urllib.error.HTTPErro........" + url)
+                print("urllib.error.HTTPErro........" + url+"\n")
+                return
                 continue
         print("*** downloading Complete ***")
 
@@ -82,20 +96,26 @@ class urls():
 class File():
     def __init__(self):
         try:  # 동일한 폴더가 있을 경우를 예외처리
-            os.mkdir(os.getcwd() + "\project")
-            os.mkdir(os.getcwd() + "\project\\htmlfile")
-            os.mkdir(os.getcwd() + "\project\\pullrequest_info")
+            os.mkdir(os.getcwd() + "\\project")
+            os.mkdir(os.getcwd() + "\\project\\htmlfile")
+            os.mkdir(os.getcwd() + "\\project\\pullrequest_info")
 
         except FileExistsError:
-            """돌일한 폴더가 존재"""
-    def make_content_w(self):                         #id, 수정파일 이름 정보를 담는 파일 생성
-        return open(os.getcwd() + "\project\pullrequest_info\pull_request_content.txt", "w")
-
-    def make_content_a(self):  # id, 수정파일 이름 정보를 담는 파일 생성
-        return open(os.getcwd() + "\project\pullrequest_info\pull_request_content.txt", "a")
+            print("동일한 폴더가 존재")
 
     def make_htmlfile(self, number):                #html정보를 저장할 파일 생성
-        return open(os.getcwd()+"\project\\htmlfile\\"+str(number)+".txt", "w")
+        return open(os.getcwd()+"\\project\\htmlfile\\"+str(number)+".txt", "w")
+
+    def print_file(self):
+        try:
+            contents = open(os.getcwd() + "\\project\\pullrequest_info\\pullrequest_info.txt","r")
+        except FileNotFoundError:
+            print("***** Error happen *****")
+            print("File data is not exist. -> You should be renewing Pullrequest_informaion Now!!\n")
+            return
+        print("Number   :    Name   :   EditFile")
+        for content in contents:
+            print(content)
 
 
 if __name__ == '__main__':
@@ -104,26 +124,23 @@ if __name__ == '__main__':
         print("1. pullrequest_html_downloading")
         print("2. pullrequest_information_renew")
         print("3. print_pullrequest_total_information")
-        print("4. search_pullrequest_information")
-        print("5. Exit")
+        print("4. Exit")
 
         try:
             choice = int(input(">>"))  # input
         except ValueError:
-            print("**** choice value is error choice. input again ****")
+            print("***** Error happen *****")
+            print("**** choice value is error choice. input again ****\n")
             continue
 
         if (choice == 1):    # pullrequest html 다운로드
-            urls().get_urls_html_downloading()
+            Urls().get_urls_html_downloading()
         elif (choice == 2):  # 정보 갱신
-            print("2. pullrequest_information_download")
-            Extract_file().readfile()
+            Extract_file().read_extract_file()
         elif (choice == 3):  # 정보 출력
-            print("3. pullrequest_information_renew")
-        elif (choice == 4):  # 정보 검색
-            print("4. search_pullrequest_information")
-        elif (choice == 5):  # 종료
-            print("5. Exit")
+            File().print_file()
+        elif (choice == 4):  # 종료
+            print("4. Exit")
             break
         else:
             print("**** choice value is error choice. input again ****")
