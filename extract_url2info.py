@@ -37,7 +37,7 @@ class Extract_file():
                 bs = BeautifulSoup(f)
                 name = bs.find_all(rel="contributor")
                 editfile_name = bs.find_all(class_="message")
-                editfile.write(str(number)+"    :    "+name[0].string +"   :   "+ editfile_name[0].string)
+                editfile.write(str(number)+"    :    "+name[0].string +"   :   "+ editfile_name[0].string+"\n")
                 print("Extracting..."+str(number)+"/"+str(self.last_number)+"...waiting")
             except FileNotFoundError:
                 print("***** Error happen *****")
@@ -115,7 +115,7 @@ class File():
             return
         print("Number   :    Name   :   EditFile")
         for content in contents:
-            print(content)
+            print(content, end = "")                #줄바꿈 제거
 
 
 if __name__ == '__main__':
