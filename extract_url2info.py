@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 class Extract_url():
 
     def __init__(self, html):
-        self.extract_number = re.findall("\d+\s*Closed|\d+\s*Open", str(html))
+        self.extract_number = re.findall("\d+\s*Closed|\d+\s*closed|\d+\s*Open|#\d+\D+opened", str(html))
         self.get_numbers = sorted(re.findall("\d+", str(self.extract_number)))
         self.init_number = min(self.get_numbers)       #string 형이지만 문자에서도 숫자가 크면 문자열에서도 큰 값임
         self.last_number = max(self.get_numbers)       #string 형이지만 문자에서도 숫자가 작으면 문자열에서도 작은 값임
@@ -37,19 +37,19 @@ class Extract_file():
                 bs = BeautifulSoup(f)
                 name = bs.find_all(rel="contributor")
                 editfile_name = bs.find_all(class_="message")
-                editfile.write(str(number)+"    :    "+name[0].string +"   :   "+ editfile_name[0].string+"\n")
+                editfile.write(str(number)+","+name[0].string +","+ editfile_name[0].string+"\n")
                 print("Extracting..."+str(number)+"/"+str(self.last_number)+"...waiting")
             except FileNotFoundError:
                 print("***** Error happen *****")
                 print("File data is not exist. -> You should be downloading Pullrequest_html Now!!\n")
                 return
             else:
-                print("Extracting..."+str(number)+"/"+str(self.last_number)+"Complete")
+                print("Extracting..."+str(number)+"/"+str(self.last_number)+"...Complete")
 
 class Urls():
     define = False
     req = urllib.request
-    url = req.urlopen("http://github.com/jyheo/JavaExercise/pulls")
+    url = req.urlopen("https://github.com/jyheo/JavaExercise/pulls")
     pull_first_url = "https://github.com/jyheo/JavaExercise/pull/"
     pulls_list_html = url.read()
 
@@ -113,9 +113,13 @@ class File():
             print("***** Error happen *****")
             print("File data is not exist. -> You should be renewing Pullrequest_informaion Now!!\n")
             return
-        print("Number   :    Name   :   EditFile")
+        print("Number      :      Name        :        EditFile")
         for content in contents:
-            print(content, end = "")                #줄바꿈 제거
+            content = re.split(",", content)
+            for number in range(0, len(content)):
+                print(content[number], end = "")  #줄바꿈 제거
+                if(number != len(content)-1):
+                    print("        :", end = "")
 
 
 if __name__ == '__main__':
