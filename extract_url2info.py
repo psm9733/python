@@ -1,4 +1,5 @@
 #make Sangmin
+#make Sangmin
 import urllib.request
 import re
 import os
@@ -113,13 +114,10 @@ class File():
             print("***** Error happen *****")
             print("File data is not exist. -> You should be renewing Pullrequest_informaion Now!!\n")
             return
-        print("Number      :      Name        :        EditFile")
+        print ('%5s %17s %39s'% ("Number", "Name", "EditFile"))
         for content in contents:
             content = re.split(",", content)
-            for number in range(0, len(content)):
-                print(content[number], end = "")  #줄바꿈 제거
-                if(number != len(content)-1):
-                    print("        :", end = "")
+            print ('%3s %20s %40s' %(content[0], content[1], content[2]), end = '')  #줄바꿈 제거
 
 
 if __name__ == '__main__':
