@@ -1,5 +1,4 @@
 #make Sangmin
-#make Sangmin
 import urllib.request
 import re
 import os
@@ -118,11 +117,13 @@ class File():
         for content in contents:
             content = re.split(",", content)
             print ('%3s %20s %40s' %(content[0], content[1], content[2]), end = '')  #줄바꿈 제거
+        print()
 
 
 if __name__ == '__main__':
 
     while (True):
+        print("***************MENU**************")
         print("1. pullrequest_html_downloading")
         print("2. pullrequest_information_renew")
         print("3. print_pullrequest_total_information")
