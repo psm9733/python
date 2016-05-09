@@ -13,6 +13,8 @@ class Extract_url():
         self.last_number = max(self.get_numbers)       #string 형이지만 문자에서도 숫자가 작으면 문자열에서도 작은 값임
 
     def get_init_number(self):
+        if int(self.init_number) == 0:
+            self.init_number = 1
         return int(self.init_number)
 
     def get_last_number(self):
