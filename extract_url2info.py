@@ -23,18 +23,18 @@ class Extract_url():
 class Extract_file():
 
     def read_extract_file(self):
-        self.path = os.getcwd() + "\\project\\"
+        self.path = os.path.join(os.getcwd(), "project")
         self.init_number = Urls().get_init_number()
         self.last_number = Urls().get_last_number()
         try:
-            editfile = open(self.path + "pullrequest_info\\pullrequest_info.txt", "w")
+            editfile = open(os.path.join(self.path, "pullrequest_info", "pullrequest_info.txt"), "w")
         except FileNotFoundError:
             print("*****Error happen*****")
             print("File data is not exist. -> You should be downloading Pullrequest_html Now!!\n")
             return
         for number in range(self.init_number, self.last_number + 1):
             try:
-                file = open(self.path + "htmlfile\\" + str(number) + ".txt", "r")
+                file = open(os.path.join(self.path, "htmlfile", str(number)+".txt"), "r")           #os.path.join()을 써서 경로명을 결합하면 윈도우/리눅스에 상관없시 사용가능!
                 f = str(file.readlines())
                 bs = BeautifulSoup(f)
                 name = bs.find_all(rel="contributor")
@@ -98,19 +98,19 @@ class Urls():
 class File():
     def __init__(self):
         try:  # 동일한 폴더가 있을 경우를 예외처리
-            os.mkdir(os.getcwd() + "\\project")
-            os.mkdir(os.getcwd() + "\\project\\htmlfile")
-            os.mkdir(os.getcwd() + "\\project\\pullrequest_info")
+            os.mkdir(os.path.join(os.getcwd(), "project"))
+            os.mkdir(os.path.join(os.getcwd(), "project", "htmlfile)"))
+            os.mkdir(os.path.join(os.getcwd(), "project", "pullrequest_info"))
 
         except FileExistsError:
             print("동일한 폴더가 존재")
 
     def make_htmlfile(self, number):                #html정보를 저장할 파일 생성
-        return open(os.getcwd()+"\\project\\htmlfile\\"+str(number)+".txt", "w")
+        return open(os.path.join(os.getcwd(), "project", "htmlfile", str(number)+".txt"), "w")
 
     def print_file(self):
         try:
-            contents = open(os.getcwd() + "\\project\\pullrequest_info\\pullrequest_info.txt","r")
+            contents = open(os.path.join(os.getcwd(), "project", "pullrequest_info", "pullrequest_info.txt"), "r")
         except FileNotFoundError:
             print("***** Error happen *****")
             print("File data is not exist. -> You should be renewing Pullrequest_informaion Now!!\n")
