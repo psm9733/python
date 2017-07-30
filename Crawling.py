@@ -76,13 +76,6 @@ class Coin:
         if self.type == "$":
             print(self.get_name() + "price = $" + str(self.price))
 
-class Frame:
-    def __init__(self):
-
-    def createWidgets(self)
-        self.QUIT = Button(self)
-
-
 if __name__ == "__main__":
 
     print '--Setup--'
